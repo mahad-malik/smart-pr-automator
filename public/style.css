@@ -1,0 +1,92 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.logo {
+  width: 120px;
+  height: auto;
+  margin: 0 auto 15px;
+  display: block;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 25px;
+  font-weight: 700;
+  color: #222;
+}
+
+/* Example badge styling */
+.badge {
+  display: inline-block;
+  background-color: #007bff;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 20px;
+  margin: 5px 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  cursor: default;
+  user-select: none;
+  transition: background-color 0.3s ease;
+}
+
+.badge:hover {
+  background-color: #0056b3;
+}
+#result {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px 25px;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.07);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+  white-space: pre-line;
+  margin-bottom: 15px;
+}
+
+#matched-badges {
+  margin-top: 12px;
+}
+
+.badge {
+  display: inline-block;
+  margin: 6px 10px 6px 0;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.95em;
+  color: white;
+  user-select: none;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.15);
+}
+
+.bug {
+  background-color: #d9534f;
+}
+
+.feature {
+  background-color: #0275d8;
+}
+
+.documentation {
+  background-color: #5cb85c;
+}

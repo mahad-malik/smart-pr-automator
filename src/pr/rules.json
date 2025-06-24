@@ -1,0 +1,17 @@
+[
+  {
+    "label": "bug",
+    "assignTo": "developer1",
+    "comment": "This PR fixes a bug"
+  },
+  {
+    "label": "feature",
+    "assignTo": "developer2",
+    "comment": "This PR adds a new feature"
+  },
+  {
+    "label": "documentation",
+    "assignTo": "doc-team",
+    "comment": "This PR updates documentation"
+  }
+]

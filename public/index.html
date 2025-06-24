@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart PR Automator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 0 15px;
+      background: #f9f9f9;
+      color: #333;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .header img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #222;
+    }
+    form {
+      background: #fff;
+      padding: 20px 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+      margin-bottom: 25px;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 8px 12px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+      resize: vertical;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      font-weight: 600;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #result {
+      white-space: pre-wrap;
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px 20px;
+      box-shadow: 0 2px 6px rgb(0 0 0 / 0.05);
+      font-family: monospace;
+      min-height: 80px;
+      margin-bottom: 15px;
+      color: #444;
+    }
+    #matched-badges {
+      margin-top: 10px;
+    }
+    .badge {
+      display: inline-block;
+      margin: 5px 10px 5px 0;
+      padding: 8px 15px;
+      border-radius: 20px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.9em;
+      user-select: none;
+    }
+    .bug { background: #d9534f; }
+    .feature { background: #5bc0de; }
+    .documentation { background: #5cb85c; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://media.licdn.com/dms/image/v2/D4D0BAQGkXcwSGqISqQ/company-logo_200_200/B4DZWKK83VG4AI-/0/1741779882011/loopstack_ai_logo?e=1756339200&v=beta&t=2V-flS1Ov-GJ0ezGFCIiFBr6qOBb7gELsAaTfIdzdpA" alt="Logo" />
+    <h1>Smart PR Automator</h1>
+  </div>
+
+  <form id="pr-form">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" placeholder="Enter PR title" required />
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="3" placeholder="Enter PR description" required></textarea>
+
+    <label for="author">Author</label>
+    <input type="text" id="author" name="author" placeholder="Enter author name" required />
+
+    <button type="submit">Submit PR</button>
+  </form>
+
+  <div id="result"></div>
+  <div id="matched-badges"></div>
+
+  <script>
+    const form = document.getElementById('pr-form');
+    const resultDiv = document.getElementById('result');
+    const badgesDiv = document.getElementById('matched-badges');
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  badgesDiv.innerHTML = '';  // Clear old badges
+  resultDiv.textContent = '';
+
+  const title = document.getElementById('title').value.trim();
+  const description = document.getElementById('description').value.trim();
+  const author = document.getElementById('author').value.trim();
+
+  if (!title || !description || !author) {
+    resultDiv.textContent = 'Please fill all fields.';
+    return;
+  }
+
+  try {
+    const response = await fetch('/pr', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title, description, author }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const data = await response.json();
+
+    // Clear previous content
+    badgesDiv.innerHTML = '';
+    resultDiv.textContent = '';
+
+    // Show success message
+    const successMsg = document.createElement('div');
+    successMsg.textContent = 'PR processed successfully!';
+    successMsg.style.fontWeight = '700';
+    successMsg.style.marginBottom = '15px';
+    resultDiv.appendChild(successMsg);
+
+    // Show badges for matched rules
+    if (data.appliedRules.length > 0) {
+      data.appliedRules.forEach(rule => {
+        const badge = document.createElement('span');
+        badge.className = `badge ${rule.label.toLowerCase()}`;
+        badge.textContent = rule.label;
+        badgesDiv.appendChild(badge);
+      });
+    } else {
+      const noMatch = document.createElement('div');
+      noMatch.textContent = 'No matching rules found.';
+      noMatch.style.marginBottom = '10px';
+      resultDiv.appendChild(noMatch);
+    }
+
+    // Show detailed matched rules with comments and assignees
+    data.appliedRules.forEach(rule => {
+      const ruleDiv = document.createElement('div');
+      ruleDiv.style.marginTop = '10px';
+      ruleDiv.style.padding = '10px 15px';
+      ruleDiv.style.background = '#f1f1f1';
+      ruleDiv.style.borderRadius = '6px';
+      ruleDiv.style.color = '#333';
+      ruleDiv.style.fontSize = '0.95rem';
+
+      ruleDiv.innerHTML = `<strong>${rule.label}:</strong> ${rule.comment} — <em>Assigned to: ${rule.assignTo}</em>`;
+      resultDiv.appendChild(ruleDiv);
+    });
+
+  } catch (error) {
+    resultDiv.textContent = `Error: ${error.message}`;
+  }
+});
+
+  </script>
+</body>
+</html>
