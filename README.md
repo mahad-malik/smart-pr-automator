@@ -21,3 +21,14 @@ npm run start
 
 ## Open your browser and navigate to:
 http://localhost:3000
+
+## How It Works
+User submits PR details via a form in the frontend.
+
+The frontend sends a POST request to /pr API.
+
+Backend service processes the input, matches rules based on keywords in title or description.
+
+Backend returns matched rules.
+
+Frontend displays matched rules as colored badges with assignment information.
